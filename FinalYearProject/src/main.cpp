@@ -43,23 +43,16 @@ int main(void)
     return 0;
 }
 
-int counter = 0;
-char message[11];
-
 void GameLoop(void)
 {
-    BeginDrawing();
-
-    // Update Game Data
-    // Should be outside BeginDrawing(); and EndDrawing();
     game.update();
 
-    ClearBackground(BLACK);
+    BeginDrawing();
+
+    ClearBackground(WHITE);
 
     // Draw the Game Objects
     game.draw();
-
-    counter++;
 
     EndDrawing();
 }

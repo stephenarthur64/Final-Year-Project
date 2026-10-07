@@ -1,4 +1,4 @@
-#include "CollisionManager.h"
+#include "../header/CollisionManager.h"
 
 void CollisionManager::BoxCollisions(GameObject& t_go1, GameObject& t_go2)
 {

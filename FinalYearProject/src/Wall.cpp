@@ -1,4 +1,4 @@
-#include "Wall.h"
+#include "../header/Wall.h"
 
 Wall::Wall()
 {

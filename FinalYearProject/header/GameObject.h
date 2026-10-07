@@ -21,15 +21,15 @@ protected:
 	Vector3 m_position;
 	Vector3 m_velocity;
 	BoundingBox m_hitbox;
-	Color m_colour;
+	Color m_colour = DARKBLUE;
 
-	float m_width;
-	float m_length;
-	float m_height;
+	float m_width = 2.0f;
+	float m_length = 2.0f;
+	float m_height = 2.0f;
 
-	float m_speed;
-	const float MAX_SPEED;
+	float m_speed = 0.5f;
+	const float MAX_SPEED = 2.0f;
 
-	bool m_drawHitbox;
+	bool m_drawHitbox = false;
 };
 

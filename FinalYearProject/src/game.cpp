@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "stdio.h"
-#include "../include/game.h"
+#include "../header/game.h"
 
 void Game::init()
 {

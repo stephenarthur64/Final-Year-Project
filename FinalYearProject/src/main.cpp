@@ -1,7 +1,7 @@
 #include "raylib.h"
 #include "stdio.h"
 
-#include "../include/game.h"
+#include "../header/game.h"
 
 // Specific include for build_web
 #if defined(WEB_BUILD)

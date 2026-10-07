@@ -1,7 +1,6 @@
-#include "GameObject.h"
+#include "../header/GameObject.h"
 
-GameObject::GameObject() : m_position({0.0f, 2.0f, 0.0f}), m_velocity({0.0f, 0.0f, 0.0f}), m_speed(0.5f), MAX_SPEED(2.0f), m_length(2.0f), m_width(2.0f), m_height(2.0f), m_drawHitbox(false),
-							m_colour(DARKBLUE)
+GameObject::GameObject() : m_position({0.0f, 2.0f, 0.0f}), m_velocity({0.0f, 0.0f, 0.0f})
 {
 }
 

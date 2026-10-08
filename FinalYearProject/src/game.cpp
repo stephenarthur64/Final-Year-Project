@@ -96,22 +96,25 @@ void Game::handleInput()
 
 void Game::collisions()
 {
-    if (CheckCollisionBoxes(m_player.getNextHitbox(1,1,1), m_wall.getHitbox()))
+    if (m_state == GameState::THREE_DIMENSION)
     {
-        //CollisionManager::BoxCollisions(m_player, m_wall);
-
-        Ray ray = { 0 };
-        ray.position = m_player.getPosition();
-        ray.direction = m_player.getDirection();
-        RayCollision collision = { 0 };
-        collision.distance = 10.0f;
-        collision.hit = false;
-
-        collision = GetRayCollisionBox(ray, m_wall.getHitbox());
-
-        if (collision.hit)
+        if (CheckCollisionBoxes(m_player.getNextHitbox(1, 1, 1), m_wall.getHitbox()))
         {
-            m_player.repulsiveForce(collision);
+            //CollisionManager::BoxCollisions(m_player, m_wall);
+
+            Ray ray = { 0 };
+            ray.position = m_player.getPosition();
+            ray.direction = m_player.getDirection();
+            RayCollision collision = { 0 };
+            collision.distance = 10.0f;
+            collision.hit = false;
+
+            collision = GetRayCollisionBox(ray, m_wall.getHitbox());
+
+            if (collision.hit)
+            {
+                m_player.repulsiveForce(collision);
+            }
         }
     }
 }

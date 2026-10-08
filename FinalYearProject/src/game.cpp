@@ -14,6 +14,8 @@ void Game::init()
 
     m_player.setHitbox();
     m_wall.setHitbox();
+
+    swapDimension(GameState::THREE_DIMENSION);
 }
 
 void Game::draw()
@@ -42,8 +44,13 @@ void Game::update()
     collisions();
 
     m_player.move();
+    cameraUpdate();
+}
+
+void Game::cameraUpdate()
+{
     m_camera.position = m_player.getPosition();
-    m_camera.position += {10.0f, 3.0f, 0.0f};
+    m_camera.position += m_cameraOffset;
     m_camera.target = m_player.getPosition();
 }
 
@@ -51,17 +58,20 @@ void Game::handleInput()
 {
     Vector3 force = { 0.0f, 0.0f, 0.0f };
 
-    if (IsKeyDown(KEY_W))
+    if (m_state == GameState::THREE_DIMENSION)
     {
-        force.x = -1.0f;
+        if (IsKeyDown(KEY_W))
+        {
+            force.x = -1.0f;
+        }
+        if (IsKeyDown(KEY_S))
+        {
+            force.x = 1.0f;
+        }
     }
     if (IsKeyDown(KEY_A))
     {
         force.z = 1.0f;
-    }
-    if (IsKeyDown(KEY_S))
-    {
-        force.x = 1.0f;
     }
     if (IsKeyDown(KEY_D))
     {
@@ -71,6 +81,14 @@ void Game::handleInput()
     {
         m_player.toggleHitbox();
         m_wall.toggleHitbox();
+    }
+    if (IsKeyReleased(KEY_TWO))
+    {
+        swapDimension(GameState::TWO_DIMENSION);
+    }
+    if (IsKeyReleased(KEY_THREE))
+    {
+        swapDimension(GameState::THREE_DIMENSION);
     }
 
     m_player.applyForce(force);
@@ -95,5 +113,21 @@ void Game::collisions()
         {
             m_player.repulsiveForce(collision);
         }
+    }
+}
+
+void Game::swapDimension(GameState t_newState)
+{
+    m_state = t_newState;
+
+    if (m_state == GameState::TWO_DIMENSION)
+    {
+        m_camera.projection = CAMERA_ORTHOGRAPHIC;
+        m_cameraOffset = { 10.0f, 0.0f, 0.0f };
+    }
+    else if (m_state == GameState::THREE_DIMENSION)
+    {
+        m_camera.projection = CAMERA_PERSPECTIVE;
+        m_cameraOffset = { 10.0f, 3.0f, 0.0f };
     }
 }

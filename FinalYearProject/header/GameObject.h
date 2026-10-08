@@ -10,10 +10,12 @@ public:
 	void update();
 	void draw();
 	void move();
+	void updateHitbox();
 	void applyForce(Vector3 t_force);
 	BoundingBox getHitbox() { return m_hitbox; }
 	BoundingBox getNextHitbox(int t_x, int t_y, int t_z);
 	Vector3 getPosition() { return m_position; }
+	Vector3 getDirection() { return Vector3Normalize(m_velocity); }
 	void stopVelocity(int t_x, int t_y, int t_z);
 	void toggleHitbox() { m_drawHitbox = !m_drawHitbox; }
 

@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Wall.h"
 #include "CollisionManager.h"
+#include "Player.h"
 
 class Game
 {
@@ -17,7 +18,7 @@ public:
 private:
     Camera3D m_camera;
 
-    GameObject m_player;
+    Player m_player;
     Wall m_wall;
 
     bool m_drawHitboxes;

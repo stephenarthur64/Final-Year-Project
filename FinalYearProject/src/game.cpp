@@ -42,6 +42,9 @@ void Game::update()
     collisions();
 
     m_player.move();
+    m_camera.position = m_player.getPosition();
+    m_camera.position += {10.0f, 3.0f, 0.0f};
+    m_camera.target = m_player.getPosition();
 }
 
 void Game::handleInput()
@@ -77,6 +80,20 @@ void Game::collisions()
 {
     if (CheckCollisionBoxes(m_player.getNextHitbox(1,1,1), m_wall.getHitbox()))
     {
-        CollisionManager::BoxCollisions(m_player, m_wall);
+        //CollisionManager::BoxCollisions(m_player, m_wall);
+
+        Ray ray = { 0 };
+        ray.position = m_player.getPosition();
+        ray.direction = m_player.getDirection();
+        RayCollision collision = { 0 };
+        collision.distance = 10.0f;
+        collision.hit = false;
+
+        collision = GetRayCollisionBox(ray, m_wall.getHitbox());
+
+        if (collision.hit)
+        {
+            m_player.repulsiveForce(collision);
+        }
     }
 }

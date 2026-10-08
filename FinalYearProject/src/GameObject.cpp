@@ -6,8 +6,7 @@ GameObject::GameObject() : m_position({0.0f, 2.0f, 0.0f}), m_velocity({0.0f, 0.0
 
 void GameObject::setHitbox()
 {
-	m_hitbox.min = { m_position.x - (m_width / 2.0f), m_position.y - (m_height / 2.0f), m_position.z - (m_length / 2.0f) };
-	m_hitbox.max = { m_position.x + (m_width / 2.0f), m_position.y + (m_height / 2.0f), m_position.z + (m_length / 2.0f) };
+	updateHitbox();
 }
 
 void GameObject::update()
@@ -28,9 +27,14 @@ void GameObject::draw()
 void GameObject::move()
 {
 	m_position += m_velocity;
-	m_hitbox.min += m_velocity;
-	m_hitbox.max += m_velocity;
+	updateHitbox();
 	m_velocity = { 0.0f, 0.0f, 0.0f };
+}
+
+void GameObject::updateHitbox()
+{
+	m_hitbox.min = { m_position.x - (m_width / 2.0f), m_position.y - (m_height / 2.0f), m_position.z - (m_length / 2.0f) };
+	m_hitbox.max = { m_position.x + (m_width / 2.0f), m_position.y + (m_height / 2.0f), m_position.z + (m_length / 2.0f) };
 }
 
 void GameObject::applyForce(Vector3 t_force)

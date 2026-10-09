@@ -5,6 +5,7 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "GameState.h"
+#include <iostream>
 
 class Game
 {
@@ -27,6 +28,7 @@ private:
 
     bool m_drawHitboxes;
     bool m_selectingDimension = false;
+    bool m_canChangeDimension = true;
     GameState m_currentState = GameState::NONE;
 };
 

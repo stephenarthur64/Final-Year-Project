@@ -77,4 +77,6 @@ void GameObject::swapDimension(GameState t_state)
 	default:
 		break;
 	}
+
+	updateHitbox();
 }

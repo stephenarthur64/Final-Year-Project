@@ -36,7 +36,14 @@ void Game::draw()
 
     if (m_selectingDimension)
     {
-        DrawRectangleLinesEx({ 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() }, 10.0f, BLUE);
+        if (m_canChangeDimension)
+        {
+            DrawRectangleLinesEx({ 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() }, 10.0f, BLUE);
+        }
+        else
+        {
+            DrawRectangleLinesEx({ 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() }, 10.0f, RED);
+        }
     }
 }
 
@@ -95,7 +102,11 @@ void Game::handleInput()
 
     if (IsKeyReleased(KEY_G))
     {
-        m_selectingDimension = !m_selectingDimension;
+        collisions();
+        if (m_canChangeDimension)
+        {
+            m_selectingDimension = !m_selectingDimension;
+        }
     }
 
     if (IsKeyReleased(KEY_TWO) && m_selectingDimension)
@@ -114,21 +125,32 @@ void Game::collisions()
 {
     if (CheckCollisionBoxes(m_player.getNextHitbox(1, 1, 1), m_wall.getHitbox()))
     {
-        //CollisionManager::BoxCollisions(m_player, m_wall);
-
-        Ray ray = { 0 };
-        ray.position = m_player.getPosition();
-        ray.direction = m_player.getDirection();
-        RayCollision collision = { 0 };
-        collision.distance = 10.0f;
-        collision.hit = false;
-
-        collision = GetRayCollisionBox(ray, m_wall.getHitbox());
-
-        if (collision.hit)
+        if (m_selectingDimension)
         {
-            m_player.repulsiveForce(collision);
+            m_canChangeDimension = false;
+            return;
         }
+        else
+        {
+            Ray ray = { 0 };
+            ray.position = m_player.getPosition();
+            ray.direction = m_player.getDirection();
+            RayCollision collision = { 0 };
+            collision.distance = 10.0f;
+            collision.hit = false;
+
+            collision = GetRayCollisionBox(ray, m_wall.getHitbox());
+
+            if (collision.hit)
+            {
+                m_player.repulsiveForce(collision);
+            }
+        }
+    }
+
+    if (m_selectingDimension)
+    {
+        m_canChangeDimension = true;
     }
 }
 

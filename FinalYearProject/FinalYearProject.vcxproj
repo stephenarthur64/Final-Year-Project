@@ -296,6 +296,7 @@
     <ClInclude Include="header\CollisionManager.h" />
     <ClInclude Include="header\game.h" />
     <ClInclude Include="header\GameObject.h" />
+    <ClInclude Include="header\GameState.h" />
     <ClInclude Include="header\Player.h" />
     <ClInclude Include="header\Wall.h" />
   </ItemGroup>

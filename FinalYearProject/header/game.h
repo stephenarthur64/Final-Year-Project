@@ -4,11 +4,7 @@
 #include "Wall.h"
 #include "CollisionManager.h"
 #include "Player.h"
-
-enum class GameState {
-    TWO_DIMENSION,
-    THREE_DIMENSION
-};
+#include "GameState.h"
 
 class Game
 {
@@ -30,7 +26,7 @@ private:
     Wall m_wall;
 
     bool m_drawHitboxes;
-    GameState m_state = GameState::THREE_DIMENSION;
+    GameState m_state = GameState::NONE;
 };
 
 #endif // GAME_H

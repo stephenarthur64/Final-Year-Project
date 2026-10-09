@@ -96,41 +96,44 @@ void Game::handleInput()
 
 void Game::collisions()
 {
-    if (m_state == GameState::THREE_DIMENSION)
+    if (CheckCollisionBoxes(m_player.getNextHitbox(1, 1, 1), m_wall.getHitbox()))
     {
-        if (CheckCollisionBoxes(m_player.getNextHitbox(1, 1, 1), m_wall.getHitbox()))
+        //CollisionManager::BoxCollisions(m_player, m_wall);
+
+        Ray ray = { 0 };
+        ray.position = m_player.getPosition();
+        ray.direction = m_player.getDirection();
+        RayCollision collision = { 0 };
+        collision.distance = 10.0f;
+        collision.hit = false;
+
+        collision = GetRayCollisionBox(ray, m_wall.getHitbox());
+
+        if (collision.hit)
         {
-            //CollisionManager::BoxCollisions(m_player, m_wall);
-
-            Ray ray = { 0 };
-            ray.position = m_player.getPosition();
-            ray.direction = m_player.getDirection();
-            RayCollision collision = { 0 };
-            collision.distance = 10.0f;
-            collision.hit = false;
-
-            collision = GetRayCollisionBox(ray, m_wall.getHitbox());
-
-            if (collision.hit)
-            {
-                m_player.repulsiveForce(collision);
-            }
+            m_player.repulsiveForce(collision);
         }
     }
 }
 
 void Game::swapDimension(GameState t_newState)
 {
-    m_state = t_newState;
+    if (m_state != t_newState)
+    {
+        m_state = t_newState;
 
-    if (m_state == GameState::TWO_DIMENSION)
-    {
-        m_camera.projection = CAMERA_ORTHOGRAPHIC;
-        m_cameraOffset = { 10.0f, 0.0f, 0.0f };
-    }
-    else if (m_state == GameState::THREE_DIMENSION)
-    {
-        m_camera.projection = CAMERA_PERSPECTIVE;
-        m_cameraOffset = { 10.0f, 3.0f, 0.0f };
+        if (m_state == GameState::TWO_DIMENSION)
+        {
+            m_camera.projection = CAMERA_ORTHOGRAPHIC;
+            m_cameraOffset = { 10.0f, 0.0f, 0.0f };
+        }
+        else if (m_state == GameState::THREE_DIMENSION)
+        {
+            m_camera.projection = CAMERA_PERSPECTIVE;
+            m_cameraOffset = { 10.0f, 3.0f, 0.0f };
+        }
+
+        m_player.swapDimension(m_state);
+        m_wall.swapDimension(m_state);
     }
 }

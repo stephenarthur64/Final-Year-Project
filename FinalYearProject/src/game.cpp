@@ -15,6 +15,11 @@ void Game::init()
     m_player.setHitbox();
     m_wall.setHitbox();
 
+    m_cameraOffset2D = { 10.0f, 0.0f, 0.0f };
+    m_cameraOffset3D = { 10.0f, 3.0f, 0.0f };
+
+    m_facing2D = Facing::NORTH;
+
     swapDimension(GameState::THREE_DIMENSION);
 }
 
@@ -44,6 +49,8 @@ void Game::draw()
         {
             DrawRectangleLinesEx({ 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() }, 10.0f, RED);
         }
+
+        DrawText(m_compassText.c_str(), 20, 20, 30, BLACK);
     }
 }
 
@@ -109,6 +116,28 @@ void Game::handleInput()
         }
     }
 
+    if (m_selectingDimension)
+    {
+        if (IsKeyReleased(KEY_Q))
+        {
+            m_facing2D = (Facing)(m_facing2D - 1);
+            if (m_facing2D < 0)
+            {
+                m_facing2D = Facing::WEST;
+            }
+            shiftFacing();
+        }
+        if (IsKeyReleased(KEY_E))
+        {
+            m_facing2D = (Facing)(m_facing2D + 1);
+            if (m_facing2D >= Facing::END)
+            {
+                m_facing2D = Facing::NORTH;
+            }
+            shiftFacing();
+        }
+    }
+
     if (IsKeyReleased(KEY_TWO) && m_selectingDimension)
     {
         swapDimension(GameState::TWO_DIMENSION);
@@ -163,15 +192,41 @@ void Game::swapDimension(GameState t_newState)
         if (m_currentState == GameState::TWO_DIMENSION)
         {
             m_camera.projection = CAMERA_ORTHOGRAPHIC;
-            m_cameraOffset = { 10.0f, 0.0f, 0.0f };
+            m_cameraOffset = m_cameraOffset2D;
         }
         else if (m_currentState == GameState::THREE_DIMENSION)
         {
             m_camera.projection = CAMERA_PERSPECTIVE;
-            m_cameraOffset = { 10.0f, 3.0f, 0.0f };
+            m_cameraOffset = m_cameraOffset3D;
         }
 
         m_player.swapDimension(m_currentState);
         m_wall.swapDimension(m_currentState);
     }
+}
+
+void Game::shiftFacing()
+{
+    switch (m_facing2D)
+    {
+    case NORTH:
+        m_cameraOffset2D = { 10.0f, 0.0f, 0.0f };
+        m_compassText = "North";
+        break;
+    case SOUTH:
+        m_cameraOffset2D = { -10.0f, 0.0f, 0.0f };
+        m_compassText = "South";
+        break;
+    case EAST:
+        m_cameraOffset2D = { 0.0f, 0.0f, 10.0f };
+        m_compassText = "East";
+        break;
+    case WEST:
+        m_cameraOffset2D = { 0.0f, 0.0f, -10.0f };
+        m_compassText = "West";
+        break;
+    default:
+        break;
+    }
+    m_cameraOffset = m_cameraOffset2D;
 }

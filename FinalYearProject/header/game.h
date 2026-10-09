@@ -7,6 +7,14 @@
 #include "GameState.h"
 #include <iostream>
 
+enum Facing {
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST,
+    END
+};
+
 class Game
 {
 public:
@@ -18,6 +26,7 @@ public:
     void handleInput();
     void collisions();
     void swapDimension(GameState t_newState);
+    void shiftFacing();
 
 private:
     Camera3D m_camera;
@@ -30,6 +39,12 @@ private:
     bool m_selectingDimension = false;
     bool m_canChangeDimension = true;
     GameState m_currentState = GameState::NONE;
+
+    Vector3 m_cameraOffset2D;
+    Vector3 m_cameraOffset3D;
+
+    Facing m_facing2D;
+    std::string m_compassText;
 };
 
 #endif // GAME_H

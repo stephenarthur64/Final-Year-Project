@@ -26,7 +26,8 @@ private:
     Wall m_wall;
 
     bool m_drawHitboxes;
-    GameState m_state = GameState::NONE;
+    bool m_selectingDimension = false;
+    GameState m_currentState = GameState::NONE;
 };
 
 #endif // GAME_H

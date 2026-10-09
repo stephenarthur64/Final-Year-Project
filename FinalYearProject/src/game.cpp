@@ -34,6 +34,10 @@ void Game::draw()
 
     EndMode3D();
 
+    if (m_selectingDimension)
+    {
+        DrawRectangleLinesEx({ 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() }, 10.0f, BLUE);
+    }
 }
 
 void Game::update()
@@ -43,7 +47,10 @@ void Game::update()
     handleInput();
     collisions();
 
-    m_player.move();
+    if (!m_selectingDimension)
+    {
+        m_player.move();
+    }
     cameraUpdate();
 }
 
@@ -58,35 +65,44 @@ void Game::handleInput()
 {
     Vector3 force = { 0.0f, 0.0f, 0.0f };
 
-    if (m_state == GameState::THREE_DIMENSION)
+    if (!m_selectingDimension)
     {
-        if (IsKeyDown(KEY_W))
+        if (m_currentState == GameState::THREE_DIMENSION)
         {
-            force.x = -1.0f;
+            if (IsKeyDown(KEY_W))
+            {
+                force.x = -1.0f;
+            }
+            if (IsKeyDown(KEY_S))
+            {
+                force.x = 1.0f;
+            }
         }
-        if (IsKeyDown(KEY_S))
+        if (IsKeyDown(KEY_A))
         {
-            force.x = 1.0f;
+            force.z = 1.0f;
+        }
+        if (IsKeyDown(KEY_D))
+        {
+            force.z = -1.0f;
+        }
+        if (IsKeyReleased(KEY_F1))
+        {
+            m_player.toggleHitbox();
+            m_wall.toggleHitbox();
         }
     }
-    if (IsKeyDown(KEY_A))
+
+    if (IsKeyReleased(KEY_G))
     {
-        force.z = 1.0f;
+        m_selectingDimension = !m_selectingDimension;
     }
-    if (IsKeyDown(KEY_D))
-    {
-        force.z = -1.0f;
-    }
-    if (IsKeyReleased(KEY_F1))
-    {
-        m_player.toggleHitbox();
-        m_wall.toggleHitbox();
-    }
-    if (IsKeyReleased(KEY_TWO))
+
+    if (IsKeyReleased(KEY_TWO) && m_selectingDimension)
     {
         swapDimension(GameState::TWO_DIMENSION);
     }
-    if (IsKeyReleased(KEY_THREE))
+    if (IsKeyReleased(KEY_THREE) && m_selectingDimension)
     {
         swapDimension(GameState::THREE_DIMENSION);
     }
@@ -118,22 +134,22 @@ void Game::collisions()
 
 void Game::swapDimension(GameState t_newState)
 {
-    if (m_state != t_newState)
+    if (m_currentState != t_newState)
     {
-        m_state = t_newState;
+        m_currentState = t_newState;
 
-        if (m_state == GameState::TWO_DIMENSION)
+        if (m_currentState == GameState::TWO_DIMENSION)
         {
             m_camera.projection = CAMERA_ORTHOGRAPHIC;
             m_cameraOffset = { 10.0f, 0.0f, 0.0f };
         }
-        else if (m_state == GameState::THREE_DIMENSION)
+        else if (m_currentState == GameState::THREE_DIMENSION)
         {
             m_camera.projection = CAMERA_PERSPECTIVE;
             m_cameraOffset = { 10.0f, 3.0f, 0.0f };
         }
 
-        m_player.swapDimension(m_state);
-        m_wall.swapDimension(m_state);
+        m_player.swapDimension(m_currentState);
+        m_wall.swapDimension(m_currentState);
     }
 }

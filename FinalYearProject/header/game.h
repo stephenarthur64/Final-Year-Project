@@ -2,7 +2,6 @@
 #define GAME_H
 #include "GameObject.h"
 #include "Wall.h"
-#include "CollisionManager.h"
 #include "Player.h"
 #include "GameState.h"
 #include <iostream>
@@ -24,6 +23,7 @@ public:
     void cameraUpdate();
 
     void handleInput();
+    void resetCollisionRay();
     void collisions();
     void swapDimension(GameState t_newState);
     void shiftFacing();
@@ -45,6 +45,10 @@ private:
 
     Facing m_facing2D;
     std::string m_compassText;
+
+    Vector3 m_collisionRayDirections[4] = { {1.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f} };
+    Ray m_collideRay = { 0 };
+    RayCollision m_collideResult = { 0 };
 };
 
 #endif // GAME_H

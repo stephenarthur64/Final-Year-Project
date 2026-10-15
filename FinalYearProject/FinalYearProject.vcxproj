@@ -277,7 +277,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\CollisionManager.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Wall.cpp" />
@@ -293,7 +292,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\CollisionManager.h" />
     <ClInclude Include="header\game.h" />
     <ClInclude Include="header\GameObject.h" />
     <ClInclude Include="header\GameState.h" />

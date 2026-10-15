@@ -59,12 +59,12 @@ void Game::update()
     UpdateCamera(&m_camera, CAMERA_CUSTOM);
 
     handleInput();
-    collisions();
 
     if (!m_selectingDimension)
     {
         m_player.move();
     }
+    collisions();
     cameraUpdate();
 }
 
@@ -150,9 +150,18 @@ void Game::handleInput()
     m_player.applyForce(force);
 }
 
+void Game::resetCollisionRay()
+{
+    m_collideRay = { 0 };
+    m_collideResult = { 0 };
+    m_collideRay.position = m_player.getPosition();
+    m_collideResult.distance = 10.0f;
+    m_collideResult.hit = false;
+}
+
 void Game::collisions()
 {
-    if (CheckCollisionBoxes(m_player.getNextHitbox(1, 1, 1), m_wall.getHitbox()))
+    if (CheckCollisionBoxes(m_player.getNextHitbox(), m_wall.getHitbox()))
     {
         if (m_selectingDimension)
         {
@@ -161,18 +170,17 @@ void Game::collisions()
         }
         else
         {
-            Ray ray = { 0 };
-            ray.position = m_player.getPosition();
-            ray.direction = m_player.getDirection();
-            RayCollision collision = { 0 };
-            collision.distance = 10.0f;
-            collision.hit = false;
+            resetCollisionRay();
 
-            collision = GetRayCollisionBox(ray, m_wall.getHitbox());
-
-            if (collision.hit)
+            for (int i = 0; i < 4; i++)
             {
-                m_player.repulsiveForce(collision);
+                m_collideRay.direction = m_collisionRayDirections[i];
+                m_collideResult = GetRayCollisionBox(m_collideRay, m_wall.getHitbox());
+
+                if (m_collideResult.hit)
+                {
+                    m_player.repulsiveForce(m_collideResult);
+                }
             }
         }
     }

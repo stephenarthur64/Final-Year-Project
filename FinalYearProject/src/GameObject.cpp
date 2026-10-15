@@ -44,21 +44,13 @@ void GameObject::applyForce(Vector3 t_force)
 	m_velocity = Vector3ClampValue(m_velocity, 0.0f, MAX_SPEED);
 }
 
-BoundingBox GameObject::getNextHitbox(int t_x, int t_y, int t_z)
+BoundingBox GameObject::getNextHitbox()
 {
 	BoundingBox tempBox = m_hitbox;
-	Vector3 tempVelocity = m_velocity * Vector3{ (float)t_x, (float)t_y, (float)t_z };
 
-	tempBox.min += tempVelocity * m_speed;
-	tempBox.max += tempVelocity * m_speed;
+	tempBox.min += m_velocity * m_speed;
+	tempBox.max += m_velocity * m_speed;
 	return tempBox;
-}
-
-void GameObject::stopVelocity(int t_x, int t_y, int t_z)
-{
-	m_velocity.x *= t_x;
-	m_velocity.y *= t_y;
-	m_velocity.z *= t_z;
 }
 
 void GameObject::swapDimension(GameState t_state)

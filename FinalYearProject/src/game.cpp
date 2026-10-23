@@ -4,19 +4,31 @@
 
 void Game::init()
 {
+    DisableCursor();
+
+    m_cameraOffset2D = { 10.0f, 0.0f, 0.0f };
+    m_cameraOffset3D = { 10.0f, 3.0f, 0.0f };
+
     m_camera.position = { 10.0f, 10.0f, 10.0f };
+    m_camera.position += m_cameraOffset3D;
     m_camera.target = { 0.0f, 0.0f, 0.0f };     
     m_camera.up = { 0.0f, 1.0f, 0.0f };    
     m_camera.fovy = 45.0f;                                
     m_camera.projection = CAMERA_PERSPECTIVE;
 
+    m_camera2D.position = { 10.0f, 0.0f, 0.0f };
+    m_camera2D.position += m_cameraOffset2D;
+    m_camera2D.target = { 0.0f, 0.0f, 0.0f };     
+    m_camera2D.up = { 0.0f, 1.0f, 0.0f };    
+    m_camera2D.fovy = 45.0f;                                
+    m_camera2D.projection = CAMERA_ORTHOGRAPHIC;
+
+    m_currentCamera = &m_camera;
+
     m_drawHitboxes = false;
 
     m_player.setHitbox();
     m_wall.setHitbox();
-
-    m_cameraOffset2D = { 10.0f, 0.0f, 0.0f };
-    m_cameraOffset3D = { 10.0f, 3.0f, 0.0f };
 
     m_facing2D = Facing::NORTH;
 
@@ -27,10 +39,10 @@ void Game::draw()
 {
     DrawFPS(0, 0);
 
-    BeginMode3D(m_camera);
+    BeginMode3D(*m_currentCamera);
 
-    DrawCube({0.0f, 0.0f, 0.0f}, 20.0f, 2.0f, 20.0f, GRAY);
-    DrawCubeWires({0.0f, 0.0f, 0.0f}, 20.0f, 2.0f, 20.0f, BLACK);
+    DrawCube({ 0.0f, 0.0f, 0.0f }, 20.0f, 2.0f, 20.0f, GRAY);
+    DrawCubeWires({ 0.0f, 0.0f, 0.0f }, 20.0f, 2.0f, 20.0f, BLACK);
 
     m_player.draw();
     m_wall.draw();
@@ -56,7 +68,7 @@ void Game::draw()
 
 void Game::update()
 {
-    UpdateCamera(&m_camera, CAMERA_CUSTOM);
+    UpdateCameraPro(m_currentCamera, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 0.0f);
 
     handleInput();
 
@@ -70,9 +82,30 @@ void Game::update()
 
 void Game::cameraUpdate()
 {
-    m_camera.position = m_player.getPosition();
-    m_camera.position += m_cameraOffset;
-    m_camera.target = m_player.getPosition();
+    if (m_currentState == GameState::THREE_DIMENSION)
+    {
+        Vector2 change = Vector2Normalize(GetMouseDelta());
+        change *= 4.0f;
+
+        Matrix m1, m2;
+        m1 = GetCameraMatrix(m_camera);
+        m2 = GetCameraMatrix(m_camera);
+        m1 = MatrixRotateX(-change.y * DEG2RAD);
+        m2 = MatrixRotateY(-change.x * DEG2RAD);
+        
+        Quaternion q1 = QuaternionFromMatrix(m1);
+        Quaternion q2 = QuaternionFromMatrix(m2);
+
+        m_camera.position.y = Vector3RotateByQuaternion(m_camera.position, q1).y;
+        m_camera.position.y = Clamp(m_camera.position.y, -10.0f, 10.0f);
+        m_camera.position.x = Vector3RotateByQuaternion(m_camera.position, q1).x;
+        m_camera.position.y = Clamp(m_camera.position.y, -10.0f, 10.0f);
+        m_camera.position = Vector3RotateByQuaternion(m_camera.position, q2);
+    }
+
+    m_cameraForward = m_currentCamera->position - m_camera.target;
+    m_cameraForward = Vector3Normalize(m_cameraForward);
+    m_cameraRight = Vector3RotateByAxisAngle(m_cameraForward, {0.0f, 1.0f, 0.0f}, 90 * DEG2RAD);
 }
 
 void Game::handleInput()
@@ -85,21 +118,22 @@ void Game::handleInput()
         {
             if (IsKeyDown(KEY_W))
             {
-                force.x = -1.0f;
+                force -= m_cameraForward;
             }
             if (IsKeyDown(KEY_S))
             {
-                force.x = 1.0f;
+                force += m_cameraForward;
             }
         }
         if (IsKeyDown(KEY_A))
         {
-            force.z = 1.0f;
+            force -= m_cameraRight;
         }
         if (IsKeyDown(KEY_D))
         {
-            force.z = -1.0f;
+            force += m_cameraRight;
         }
+        force.y = 0.0f;
         if (IsKeyReleased(KEY_F1))
         {
             m_player.toggleHitbox();
@@ -147,6 +181,10 @@ void Game::handleInput()
         swapDimension(GameState::THREE_DIMENSION);
     }
 
+    if (m_currentState == GameState::TWO_DIMENSION)
+    {
+        force.x = 0.0f;
+    }
     m_player.applyForce(force);
 }
 
@@ -199,12 +237,13 @@ void Game::swapDimension(GameState t_newState)
 
         if (m_currentState == GameState::TWO_DIMENSION)
         {
-            m_camera.projection = CAMERA_ORTHOGRAPHIC;
+            m_currentCamera = &m_camera2D;
             m_cameraOffset = m_cameraOffset2D;
+            shiftFacing();
         }
         else if (m_currentState == GameState::THREE_DIMENSION)
         {
-            m_camera.projection = CAMERA_PERSPECTIVE;
+            m_currentCamera = &m_camera;
             m_cameraOffset = m_cameraOffset3D;
         }
 
@@ -218,23 +257,22 @@ void Game::shiftFacing()
     switch (m_facing2D)
     {
     case NORTH:
-        m_cameraOffset2D = { 10.0f, 0.0f, 0.0f };
+        m_camera2D.position = { 10.0f, 0.0f, 0.0f };
         m_compassText = "North";
         break;
     case SOUTH:
-        m_cameraOffset2D = { -10.0f, 0.0f, 0.0f };
+        m_camera2D.position = { -10.0f, 0.0f, 0.0f };
         m_compassText = "South";
         break;
     case EAST:
-        m_cameraOffset2D = { 0.0f, 0.0f, 10.0f };
+        m_camera2D.position = { 0.0f, 0.0f, 10.0f };
         m_compassText = "East";
         break;
     case WEST:
-        m_cameraOffset2D = { 0.0f, 0.0f, -10.0f };
+        m_camera2D.position = { 0.0f, 0.0f, -10.0f };
         m_compassText = "West";
         break;
     default:
         break;
     }
-    m_cameraOffset = m_cameraOffset2D;
 }

@@ -30,6 +30,8 @@ public:
 
 private:
     Camera3D m_camera;
+    Camera3D m_camera2D;
+    Camera3D* m_currentCamera;
     Vector3 m_cameraOffset;
 
     Player m_player;
@@ -49,6 +51,10 @@ private:
     Vector3 m_collisionRayDirections[4] = { {1.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f} };
     Ray m_collideRay = { 0 };
     RayCollision m_collideResult = { 0 };
+
+    Vector3 m_cameraForward;
+    Vector3 m_cameraRight;
+    Vector3 m_cameraTarget = { 0.0f, 0.0f, 0.0f };
 };
 
 #endif // GAME_H

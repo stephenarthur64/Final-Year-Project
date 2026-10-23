@@ -53,22 +53,34 @@ BoundingBox GameObject::getNextHitbox()
 	return tempBox;
 }
 
-void GameObject::swapDimension(GameState t_state)
+void GameObject::swapDimension(GameState t_state, Vector3 t_activeAxis)
 {
 	m_state = t_state;
 
 	switch (m_state)
 	{
 	case GameState::TWO_DIMENSION:
-		m_axisBuffer = m_position.x;
-		m_position.x = 0.0f;
+		swapAxis(t_activeAxis);
 		break;
 	case GameState::THREE_DIMENSION:
-		m_position.x = m_axisBuffer;
+		m_position += m_axisBuffer;
+		m_axisBuffer = { 0.0f, 0.0f, 0.0f };
+		updateHitbox();
 		break;
 	default:
 		break;
 	}
 
+}
+
+void GameObject::swapAxis(Vector3 t_activeAxis)
+{
+	m_position += m_axisBuffer;
+
+	if (t_activeAxis.x == 0.0f) { m_axisBuffer = { m_position.x , 0.0f, 0.0f }; }
+	if (t_activeAxis.z == 0.0f) { m_axisBuffer = { 0.0f, 0.0f, m_position.z }; }
+
+	m_position *= t_activeAxis;
 	updateHitbox();
+
 }

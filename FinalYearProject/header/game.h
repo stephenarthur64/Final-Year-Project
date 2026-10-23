@@ -55,6 +55,8 @@ private:
     Vector3 m_cameraForward;
     Vector3 m_cameraRight;
     Vector3 m_cameraTarget = { 0.0f, 0.0f, 0.0f };
+
+    Vector3 m_currentActiveAxis = { 1.0f, 1.0f, 1.0f };
 };
 
 #endif // GAME_H

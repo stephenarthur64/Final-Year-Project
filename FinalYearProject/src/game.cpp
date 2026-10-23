@@ -181,9 +181,14 @@ void Game::handleInput()
         swapDimension(GameState::THREE_DIMENSION);
     }
 
+    if (IsKeyReleased(KEY_INSERT)) // DEBUG
+    {
+        m_currentCamera = &m_camera;
+    }
+
     if (m_currentState == GameState::TWO_DIMENSION)
     {
-        force.x = 0.0f;
+        force *= m_currentActiveAxis;
     }
     m_player.applyForce(force);
 }
@@ -247,8 +252,8 @@ void Game::swapDimension(GameState t_newState)
             m_cameraOffset = m_cameraOffset3D;
         }
 
-        m_player.swapDimension(m_currentState);
-        m_wall.swapDimension(m_currentState);
+        m_player.swapDimension(m_currentState, m_currentActiveAxis);
+        m_wall.swapDimension(m_currentState, m_currentActiveAxis);
     }
 }
 
@@ -259,20 +264,27 @@ void Game::shiftFacing()
     case NORTH:
         m_camera2D.position = { 10.0f, 0.0f, 0.0f };
         m_compassText = "North";
+        m_currentActiveAxis = { 0.0f, 1.0f, 1.0f };
         break;
     case SOUTH:
         m_camera2D.position = { -10.0f, 0.0f, 0.0f };
         m_compassText = "South";
+        m_currentActiveAxis = { 0.0f, 1.0f, 1.0f };
         break;
     case EAST:
         m_camera2D.position = { 0.0f, 0.0f, 10.0f };
         m_compassText = "East";
+        m_currentActiveAxis = { 1.0f, 1.0f, 0.0f };
         break;
     case WEST:
         m_camera2D.position = { 0.0f, 0.0f, -10.0f };
         m_compassText = "West";
+        m_currentActiveAxis = { 1.0f, 1.0f, 0.0f };
         break;
     default:
         break;
     }
+
+    m_player.swapAxis(m_currentActiveAxis);
+    m_wall.swapAxis(m_currentActiveAxis);
 }

@@ -16,3 +16,8 @@ void Player::repulsiveForce(RayCollision t_rc)
 	updateHitbox();
 
 }
+
+void Player::addGroundVelocity(Vector3 t_vel)
+{
+	m_position += t_vel;
+}

@@ -17,6 +17,7 @@ public:
 	BoundingBox getNextHitbox();
 	Vector3 getPosition() { return m_position; }
 	Vector3 getDirection() { return Vector3Normalize(m_velocity); }
+	Vector3 getVelocity() { return m_velocity; }
 	void toggleHitbox() { m_drawHitbox = !m_drawHitbox; }
 	void swapDimension(GameState t_state, Vector3 t_activeAxis);
 	void swapAxis(Vector3 t_activeAxis);

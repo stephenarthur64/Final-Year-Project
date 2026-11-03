@@ -31,6 +31,7 @@ void Game::init()
     m_walls.push_back(std::make_shared<Wall>(Wall({ 5.0f, 2.0f, 1.0f }, 10.0f, 2.0f, 4.0f)));
 
     m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 2.0f, 2.0f, 4.0f, {5.0f, 2.0f, -10.0f}, {-5.0f, 2.0f, -10.0f})));
+    m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 5.0f, 5.0f, 2.0f, {5.0f, 0.0f, 10.0f}, {-5.0f, 0.0f, 10.0f})));
 
     m_player.setHitbox();
     for (std::shared_ptr<Wall> wall : m_walls)
@@ -238,14 +239,21 @@ void Game::collisions()
             {
                 resetCollisionRay();
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < DIRECTION_RAY_AMOUNT; i++)
                 {
                     m_collideRay.direction = m_collisionRayDirections[i];
                     m_collideResult = GetRayCollisionBox(m_collideRay, wall.get()->getHitbox());
 
                     if (m_collideResult.hit)
                     {
-                        m_player.repulsiveForce(m_collideResult);
+                        if (i == DIRECTION_RAY_AMOUNT - 1)
+                        {
+                            m_player.addGroundVelocity(wall.get()->getVelocity());
+                        }
+                        else
+                        {
+                            m_player.repulsiveForce(m_collideResult);
+                        }
                     }
                 }
             }

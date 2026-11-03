@@ -28,7 +28,6 @@ void GameObject::move()
 {
 	m_position += m_velocity;
 	updateHitbox();
-	m_velocity = { 0.0f, 0.0f, 0.0f };
 }
 
 void GameObject::updateHitbox()
@@ -39,6 +38,8 @@ void GameObject::updateHitbox()
 
 void GameObject::applyForce(Vector3 t_force)
 {
+	m_velocity = { 0.0f, 0.0f, 0.0f };
+
 	m_velocity += t_force * m_speed;
 
 	m_velocity = Vector3ClampValue(m_velocity, 0.0f, MAX_SPEED);

@@ -50,7 +50,8 @@ private:
     Facing m_facing2D;
     std::string m_compassText;
 
-    Vector3 m_collisionRayDirections[4] = { {1.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f} };
+    static const int DIRECTION_RAY_AMOUNT = 5;
+    Vector3 m_collisionRayDirections[DIRECTION_RAY_AMOUNT] = { {1.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, -1.0f, 0.0f} };
     Ray m_collideRay = { 0 };
     RayCollision m_collideResult = { 0 };
 

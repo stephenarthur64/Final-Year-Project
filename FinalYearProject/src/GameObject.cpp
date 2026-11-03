@@ -1,6 +1,6 @@
 #include "../header/GameObject.h"
 
-GameObject::GameObject() : m_position({0.0f, 2.0f, 0.0f}), m_velocity({0.0f, 0.0f, 0.0f})
+GameObject::GameObject() : m_position({0.0f, 2.0f, 0.0f}), m_velocity({0.0f, 0.0f, 0.0f}), m_axisBuffer({0.0f, 0.0f, 0.0f})
 {
 }
 

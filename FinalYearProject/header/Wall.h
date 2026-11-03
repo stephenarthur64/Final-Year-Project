@@ -4,6 +4,6 @@ class Wall :
     public GameObject
 {
 public:
-    Wall();
+    Wall(Vector3 t_pos, float t_l, float t_w, float t_h);
 };
 

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "GameState.h"
 #include <iostream>
+#include <vector>
 
 enum Facing {
     NORTH,
@@ -35,7 +36,7 @@ private:
     Vector3 m_cameraOffset;
 
     Player m_player;
-    Wall m_wall;
+    std::vector<Wall> m_walls;
 
     bool m_drawHitboxes;
     bool m_selectingDimension = false;

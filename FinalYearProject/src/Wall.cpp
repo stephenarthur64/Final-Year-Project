@@ -1,9 +1,10 @@
 #include "../header/Wall.h"
 
-Wall::Wall()
+Wall::Wall(Vector3 t_pos, float t_l, float t_w, float t_h)
 {
-	m_position = { 2.0f, 2.0f, -5.0f };
-	m_width = 10.0f;
-	m_height = 4.0f;
+	m_position = t_pos;
+	m_length = t_l;
+	m_width = t_w;
+	m_height = t_h;
 	m_colour = DARKGRAY;
 }

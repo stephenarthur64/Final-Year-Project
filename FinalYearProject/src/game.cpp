@@ -27,8 +27,14 @@ void Game::init()
 
     m_drawHitboxes = false;
 
+    m_walls.push_back(Wall({ 2.0f, 2.0f, -5.0f }, 2.0f, 10.0f, 4.0f));
+    m_walls.push_back(Wall({ 5.0f, 2.0f, 1.0f }, 10.0f, 2.0f, 4.0f));
+
     m_player.setHitbox();
-    m_wall.setHitbox();
+    for (Wall& wall : m_walls)
+    {
+         wall.setHitbox();
+    }
 
     m_facing2D = Facing::NORTH;
 
@@ -45,7 +51,11 @@ void Game::draw()
     DrawCubeWires({ 0.0f, 0.0f, 0.0f }, 20.0f, 2.0f, 20.0f, BLACK);
 
     m_player.draw();
-    m_wall.draw();
+
+    for (Wall& wall : m_walls)
+    {
+        wall.draw();
+    }
 
     DrawGrid(10, 1.0f);
 
@@ -137,7 +147,11 @@ void Game::handleInput()
         if (IsKeyReleased(KEY_F1))
         {
             m_player.toggleHitbox();
-            m_wall.toggleHitbox();
+
+            for (Wall& wall : m_walls)
+            {
+                wall.toggleHitbox();
+            }
         }
     }
 
@@ -204,33 +218,36 @@ void Game::resetCollisionRay()
 
 void Game::collisions()
 {
-    if (CheckCollisionBoxes(m_player.getNextHitbox(), m_wall.getHitbox()))
+    for (Wall& wall : m_walls)
     {
-        if (m_selectingDimension)
+        if (CheckCollisionBoxes(m_player.getNextHitbox(), wall.getHitbox()))
         {
-            m_canChangeDimension = false;
-            return;
-        }
-        else
-        {
-            resetCollisionRay();
-
-            for (int i = 0; i < 4; i++)
+            if (m_selectingDimension)
             {
-                m_collideRay.direction = m_collisionRayDirections[i];
-                m_collideResult = GetRayCollisionBox(m_collideRay, m_wall.getHitbox());
+                m_canChangeDimension = false;
+                return;
+            }
+            else
+            {
+                resetCollisionRay();
 
-                if (m_collideResult.hit)
+                for (int i = 0; i < 4; i++)
                 {
-                    m_player.repulsiveForce(m_collideResult);
+                    m_collideRay.direction = m_collisionRayDirections[i];
+                    m_collideResult = GetRayCollisionBox(m_collideRay, wall.getHitbox());
+
+                    if (m_collideResult.hit)
+                    {
+                        m_player.repulsiveForce(m_collideResult);
+                    }
                 }
             }
         }
-    }
 
-    if (m_selectingDimension)
-    {
-        m_canChangeDimension = true;
+        if (m_selectingDimension)
+        {
+            m_canChangeDimension = true;
+        }
     }
 }
 
@@ -253,7 +270,11 @@ void Game::swapDimension(GameState t_newState)
         }
 
         m_player.swapDimension(m_currentState, m_currentActiveAxis);
-        m_wall.swapDimension(m_currentState, m_currentActiveAxis);
+
+        for (Wall& wall : m_walls)
+        {
+            wall.swapDimension(m_currentState, m_currentActiveAxis);
+        }
     }
 }
 
@@ -286,5 +307,9 @@ void Game::shiftFacing()
     }
 
     m_player.swapAxis(m_currentActiveAxis);
-    m_wall.swapAxis(m_currentActiveAxis);
+
+    for (Wall& wall : m_walls)
+    {
+        wall.swapAxis(m_currentActiveAxis);
+    }
 }

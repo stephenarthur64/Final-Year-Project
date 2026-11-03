@@ -26,14 +26,16 @@ void Game::init()
     m_currentCamera = &m_camera;
 
     m_drawHitboxes = false;
+    
+    m_walls.push_back(std::make_shared<Wall>(Wall({ 2.0f, 2.0f, -5.0f }, 2.0f, 10.0f, 4.0f)));
+    m_walls.push_back(std::make_shared<Wall>(Wall({ 5.0f, 2.0f, 1.0f }, 10.0f, 2.0f, 4.0f)));
 
-    m_walls.push_back(Wall({ 2.0f, 2.0f, -5.0f }, 2.0f, 10.0f, 4.0f));
-    m_walls.push_back(Wall({ 5.0f, 2.0f, 1.0f }, 10.0f, 2.0f, 4.0f));
+    m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 2.0f, 2.0f, 4.0f, {5.0f, 2.0f, -10.0f}, {-5.0f, 2.0f, -10.0f})));
 
     m_player.setHitbox();
-    for (Wall& wall : m_walls)
+    for (std::shared_ptr<Wall> wall : m_walls)
     {
-         wall.setHitbox();
+        wall.get()->setHitbox();
     }
 
     m_facing2D = Facing::NORTH;
@@ -52,9 +54,9 @@ void Game::draw()
 
     m_player.draw();
 
-    for (Wall& wall : m_walls)
+    for (std::shared_ptr<Wall> wall : m_walls)
     {
-        wall.draw();
+        wall.get()->draw();
     }
 
     DrawGrid(10, 1.0f);
@@ -85,6 +87,11 @@ void Game::update()
     if (!m_selectingDimension)
     {
         m_player.move();
+    }
+
+    for (std::shared_ptr<Wall> wall : m_walls)
+    {
+        wall.get()->update();
     }
     collisions();
     cameraUpdate();
@@ -148,9 +155,9 @@ void Game::handleInput()
         {
             m_player.toggleHitbox();
 
-            for (Wall& wall : m_walls)
+            for (std::shared_ptr<Wall> wall : m_walls)
             {
-                wall.toggleHitbox();
+                wall.get()->toggleHitbox();
             }
         }
     }
@@ -218,9 +225,9 @@ void Game::resetCollisionRay()
 
 void Game::collisions()
 {
-    for (Wall& wall : m_walls)
+    for (std::shared_ptr<Wall> wall : m_walls)
     {
-        if (CheckCollisionBoxes(m_player.getNextHitbox(), wall.getHitbox()))
+        if (CheckCollisionBoxes(m_player.getNextHitbox(), wall.get()->getHitbox()))
         {
             if (m_selectingDimension)
             {
@@ -234,7 +241,7 @@ void Game::collisions()
                 for (int i = 0; i < 4; i++)
                 {
                     m_collideRay.direction = m_collisionRayDirections[i];
-                    m_collideResult = GetRayCollisionBox(m_collideRay, wall.getHitbox());
+                    m_collideResult = GetRayCollisionBox(m_collideRay, wall.get()->getHitbox());
 
                     if (m_collideResult.hit)
                     {
@@ -271,9 +278,9 @@ void Game::swapDimension(GameState t_newState)
 
         m_player.swapDimension(m_currentState, m_currentActiveAxis);
 
-        for (Wall& wall : m_walls)
+        for (std::shared_ptr<Wall> wall : m_walls)
         {
-            wall.swapDimension(m_currentState, m_currentActiveAxis);
+            wall.get()->swapDimension(m_currentState, m_currentActiveAxis);
         }
     }
 }
@@ -308,8 +315,8 @@ void Game::shiftFacing()
 
     m_player.swapAxis(m_currentActiveAxis);
 
-    for (Wall& wall : m_walls)
+    for (std::shared_ptr<Wall> wall : m_walls)
     {
-        wall.swapAxis(m_currentActiveAxis);
+        wall.get()->swapAxis(m_currentActiveAxis);
     }
 }

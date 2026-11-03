@@ -27,6 +27,7 @@
     <ClCompile Include="src\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\MovingWall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\wabbit_alpha.png">
@@ -49,5 +50,6 @@
     <ClInclude Include="header\GameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="header\MovingWall.h" />
   </ItemGroup>
 </Project>

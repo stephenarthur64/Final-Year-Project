@@ -278,6 +278,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\MovingWall.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Wall.cpp" />
     <ClCompile Include="src\game.cpp" />
@@ -295,6 +296,7 @@
     <ClInclude Include="header\game.h" />
     <ClInclude Include="header\GameObject.h" />
     <ClInclude Include="header\GameState.h" />
+    <ClInclude Include="header\MovingWall.h" />
     <ClInclude Include="header\Player.h" />
     <ClInclude Include="header\Wall.h" />
   </ItemGroup>

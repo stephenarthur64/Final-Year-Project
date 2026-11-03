@@ -2,6 +2,7 @@
 #define GAME_H
 #include "GameObject.h"
 #include "Wall.h"
+#include "MovingWall.h"
 #include "Player.h"
 #include "GameState.h"
 #include <iostream>
@@ -36,7 +37,7 @@ private:
     Vector3 m_cameraOffset;
 
     Player m_player;
-    std::vector<Wall> m_walls;
+    std::vector<std::shared_ptr<Wall>> m_walls;
 
     bool m_drawHitboxes;
     bool m_selectingDimension = false;

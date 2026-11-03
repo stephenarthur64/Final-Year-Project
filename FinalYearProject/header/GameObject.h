@@ -8,7 +8,7 @@ class GameObject
 public:
 	GameObject();
 	void setHitbox();
-	void update();
+	virtual void update();
 	void draw();
 	void move();
 	void updateHitbox();

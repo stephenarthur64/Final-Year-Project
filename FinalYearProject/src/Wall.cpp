@@ -3,9 +3,14 @@
 Wall::Wall(Vector3 t_pos, float t_l, float t_w, float t_h)
 {
 	m_position = t_pos;
-	m_length = t_l;
-	m_width = t_w;
-	m_height = t_h;
+	m_defaultLength = t_l;
+	m_defaultWidth = t_w;
+	m_defaultHeight = t_h;
+
+	m_length = m_defaultLength;
+	m_width = m_defaultWidth;
+	m_height = m_defaultHeight;
+
 	m_colour = DARKGRAY;
 }
 

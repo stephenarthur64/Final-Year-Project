@@ -61,6 +61,8 @@ private:
     Vector3 m_cameraTarget = { 0.0f, 0.0f, 0.0f };
 
     Vector3 m_currentActiveAxis = { 1.0f, 1.0f, 1.0f };
+
+    bool m_movingCamera = false;
 };
 
 #endif // GAME_H

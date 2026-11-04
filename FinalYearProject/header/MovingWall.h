@@ -9,8 +9,8 @@ class MovingWall :
 public:
     MovingWall(Vector3 t_pos, float t_l, float t_w, float t_h, Vector3 t_upLimit, Vector3 t_lowLimit);
     virtual void update() override;
-    virtual void swapDimension(GameState t_state, Vector3 t_activeAxis) override;
-	virtual void swapAxis(Vector3 t_activeAxis) override;
+    virtual void swapDimension(GameState t_state, Vector3 t_activeAxis, Vector3 t_camPos) override;
+	virtual void swapAxis(Vector3 t_activeAxis, Vector3 t_camPos) override;
 
 private:
     Vector3* m_target;

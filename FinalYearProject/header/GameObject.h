@@ -19,8 +19,8 @@ public:
 	Vector3 getDirection() { return Vector3Normalize(m_velocity); }
 	Vector3 getVelocity() { return m_velocity; }
 	void toggleHitbox() { m_drawHitbox = !m_drawHitbox; }
-	virtual void swapDimension(GameState t_state, Vector3 t_activeAxis);
-	virtual void swapAxis(Vector3 t_activeAxis);
+	virtual void swapDimension(GameState t_state, Vector3 t_activeAxis, Vector3 t_camPos);
+	virtual void swapAxis(Vector3 t_activeAxis, Vector3 t_camPos);
 
 protected:
 	Vector3 m_position;
@@ -33,6 +33,12 @@ protected:
 	float m_width = 2.0f;
 	float m_length = 2.0f;
 	float m_height = 2.0f;
+
+	float m_defaultWidth = 2.0f;
+	float m_defaultLength = 2.0f;
+	float m_defaultHeight = 2.0f;
+
+	float m_sizeMod = 1.0f;
 
 	float m_speed = 0.5f;
 	const float MAX_SPEED = 2.0f;

@@ -54,14 +54,22 @@ BoundingBox GameObject::getNextHitbox()
 	return tempBox;
 }
 
-void GameObject::swapDimension(GameState t_state, Vector3 t_activeAxis)
+void GameObject::swapDimension(GameState t_state, Vector3 t_activeAxis, Vector3 t_camPos)
 {
 	m_state = t_state;
+
+	m_length = m_defaultLength;
+	m_width = m_defaultWidth;
+	m_height = m_defaultHeight;
 
 	switch (m_state)
 	{
 	case GameState::TWO_DIMENSION:
-		swapAxis(t_activeAxis);
+		swapAxis(t_activeAxis, t_camPos);
+		m_length *= m_sizeMod;
+		m_width *= m_sizeMod;
+		m_height *= m_sizeMod;
+		updateHitbox();
 		break;
 	case GameState::THREE_DIMENSION:
 		m_position += m_axisBuffer;
@@ -71,12 +79,20 @@ void GameObject::swapDimension(GameState t_state, Vector3 t_activeAxis)
 	default:
 		break;
 	}
-
 }
 
-void GameObject::swapAxis(Vector3 t_activeAxis)
+void GameObject::swapAxis(Vector3 t_activeAxis, Vector3 t_camPos)
 {
+	m_length = m_defaultLength;
+	m_width = m_defaultWidth;
+	m_height = m_defaultHeight;
+
 	m_position += m_axisBuffer;
+
+	m_sizeMod = Vector3Distance(m_position, t_camPos);
+	m_length *= m_sizeMod;
+	m_width *= m_sizeMod;
+	m_height *= m_sizeMod;
 
 	if (t_activeAxis.x == 0.0f) { m_axisBuffer = { m_position.x , 0.0f, 0.0f }; }
 	if (t_activeAxis.z == 0.0f) { m_axisBuffer = { 0.0f, 0.0f, m_position.z }; }

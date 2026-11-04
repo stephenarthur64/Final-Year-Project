@@ -4,8 +4,6 @@
 
 void Game::init()
 {
-    DisableCursor();
-
     m_cameraOffset2D = { 10.0f, 0.0f, 0.0f };
     m_cameraOffset3D = { 10.0f, 3.0f, 0.0f };
 
@@ -96,11 +94,12 @@ void Game::update()
     
     collisions();
     cameraUpdate();
+    std::cout << "Distance to camera: " << Vector3Distance(m_player.getPosition(), m_currentCamera->position) << "\n";
 }
 
 void Game::cameraUpdate()
 {
-    if (m_currentState == GameState::THREE_DIMENSION)
+    if (m_currentState == GameState::THREE_DIMENSION && m_movingCamera)
     {
         Vector2 change = Vector2Normalize(GetMouseDelta());
         change *= 4.0f;
@@ -129,6 +128,17 @@ void Game::cameraUpdate()
 void Game::handleInput()
 {
     Vector3 force = { 0.0f, 0.0f, 0.0f };
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        m_movingCamera = true;
+        DisableCursor();
+    }
+    else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+    {
+        m_movingCamera = false;
+        EnableCursor();
+    }
 
     if (!m_selectingDimension)
     {
@@ -310,11 +320,11 @@ void Game::swapDimension(GameState t_newState)
             m_cameraOffset = m_cameraOffset3D;
         }
 
-        m_player.swapDimension(m_currentState, m_currentActiveAxis);
+        m_player.swapDimension(m_currentState, m_currentActiveAxis, m_currentCamera->position);
 
         for (std::shared_ptr<Wall> wall : m_walls)
         {
-            wall.get()->swapDimension(m_currentState, m_currentActiveAxis);
+            wall.get()->swapDimension(m_currentState, m_currentActiveAxis, m_currentCamera->position);
         }
     }
 }
@@ -347,10 +357,10 @@ void Game::shiftFacing()
         break;
     }
 
-    m_player.swapAxis(m_currentActiveAxis);
+    m_player.swapAxis(m_currentActiveAxis, m_currentCamera->position);
 
     for (std::shared_ptr<Wall> wall : m_walls)
     {
-        wall.get()->swapAxis(m_currentActiveAxis);
+        wall.get()->swapAxis(m_currentActiveAxis, m_currentCamera->position);
     }
 }

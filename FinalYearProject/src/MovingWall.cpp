@@ -1,7 +1,7 @@
 #include "../header/MovingWall.h"
 
 MovingWall::MovingWall(Vector3 t_pos, float t_l, float t_w, float t_h, Vector3 t_upLimit, Vector3 t_lowLimit) : Wall(t_pos, t_l, t_w, t_h),
-		m_upperLimit(t_upLimit), m_lowerLimit(t_lowLimit), m_direction({0.0f, 0.0f, 0.0f}), m_lowerAxisBuffer({0.0f, 0.0f, 0.0f}), m_upperAxisBuffer(0.0f, 0.0f, 0.0f)
+		m_upperLimit(t_upLimit), m_lowerLimit(t_lowLimit), m_direction({0.0f, 0.0f, 0.0f}), m_lowerAxisBuffer({0.0f, 0.0f, 0.0f}), m_upperAxisBuffer({0.0f, 0.0f, 0.0f})
 {
 	m_speed = 0.1f;
 }
@@ -47,6 +47,8 @@ void MovingWall::swapDimension(GameState t_state, Vector3 t_activeAxis)
 		m_upperLimit += m_upperAxisBuffer;
 		m_lowerLimit += m_lowerAxisBuffer;
 		m_axisBuffer = { 0.0f, 0.0f, 0.0f };
+		m_upperAxisBuffer = {0.0f, 0.0f, 0.0f};
+		m_lowerAxisBuffer = {0.0f, 0.0f, 0.0f};
 		updateHitbox();
 		break;
 	default:

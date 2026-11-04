@@ -88,12 +88,12 @@ void Game::update()
     if (!m_selectingDimension)
     {
         m_player.move();
+        for (std::shared_ptr<Wall> wall : m_walls)
+        {
+            wall.get()->update();
+        }
     }
-
-    for (std::shared_ptr<Wall> wall : m_walls)
-    {
-        wall.get()->update();
-    }
+    
     collisions();
     cameraUpdate();
 }
@@ -182,6 +182,7 @@ void Game::handleInput()
                 m_facing2D = Facing::WEST;
             }
             shiftFacing();
+            collisions();
         }
         if (IsKeyReleased(KEY_E))
         {
@@ -191,6 +192,7 @@ void Game::handleInput()
                 m_facing2D = Facing::NORTH;
             }
             shiftFacing();
+            collisions();
         }
     }
 
@@ -203,10 +205,17 @@ void Game::handleInput()
         swapDimension(GameState::THREE_DIMENSION);
     }
 
-    if (IsKeyReleased(KEY_INSERT)) // DEBUG
+    // DEBUG ---------------------
+    if (IsKeyReleased(KEY_INSERT))
     {
         m_currentCamera = &m_camera;
     }
+
+    if (IsKeyReleased(KEY_DELETE))
+    {
+        m_canChangeDimension = true;
+    }
+    // END DEBUG -------------------
 
     if (m_currentState == GameState::TWO_DIMENSION)
     {
@@ -232,7 +241,24 @@ void Game::collisions()
         {
             if (m_selectingDimension)
             {
-                m_canChangeDimension = false;
+                // Ignores moving platforms below the player
+                if (m_canChangeDimension && wall.get()->getPosition().y < m_player.getPosition().y) // If another wall isn't colliding
+                {
+                    resetCollisionRay();
+
+                    m_collideRay.direction = m_collisionRayDirections[DIRECTION_RAY_AMOUNT - 1];
+                    m_collideResult = GetRayCollisionBox(m_collideRay, wall.get()->getHitbox());
+                    if (m_collideResult.hit)
+                    {
+                        m_canChangeDimension = true;
+                        continue;
+                    }
+                }
+
+                if (wall.get()->getPosition().y >= m_player.getPosition().y)
+                {
+                    m_canChangeDimension = false;
+                }
                 return;
             }
             else

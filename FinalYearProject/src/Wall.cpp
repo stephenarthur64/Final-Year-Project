@@ -18,3 +18,17 @@ void Wall::update()
 {
 	// Empty for now, here for polymorphism
 }
+
+/// @brief Get Lower Y-Offset Hitbox of Wall, ensures object is below the player while avoiding other walls
+/// @return Wall Hitbox offset down
+BoundingBox Wall::getLowHitbox()
+{
+	BoundingBox temp;
+	temp.max = m_hitbox.max;
+	temp.min = m_hitbox.min;
+
+	temp.max.y -= 1.0f;
+	temp.min.y -= 1.0f;
+
+	return temp;
+}

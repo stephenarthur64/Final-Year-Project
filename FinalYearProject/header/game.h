@@ -7,6 +7,7 @@
 #include "GameState.h"
 #include <iostream>
 #include <vector>
+#include <memory>
 
 enum Facing {
     NORTH,

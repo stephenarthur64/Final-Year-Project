@@ -119,11 +119,13 @@ GENERATED :=
 OBJECTS :=
 
 GENERATED += $(OBJDIR)/GameObject.o
+GENERATED += $(OBJDIR)/MovingWall.o
 GENERATED += $(OBJDIR)/Player.o
 GENERATED += $(OBJDIR)/Wall.o
 GENERATED += $(OBJDIR)/game.o
 GENERATED += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/GameObject.o
+OBJECTS += $(OBJDIR)/MovingWall.o
 OBJECTS += $(OBJDIR)/Player.o
 OBJECTS += $(OBJDIR)/Wall.o
 OBJECTS += $(OBJDIR)/game.o
@@ -192,6 +194,9 @@ endif
 # #############################################
 
 $(OBJDIR)/GameObject.o: src/GameObject.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/MovingWall.o: src/MovingWall.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Player.o: src/Player.cpp

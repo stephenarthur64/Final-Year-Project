@@ -11,7 +11,7 @@ void GameObject::setHitbox()
 
 void GameObject::update()
 {
-	move();
+	
 }
 
 void GameObject::draw()
@@ -66,9 +66,6 @@ void GameObject::swapDimension(GameState t_state, Vector3 t_activeAxis, Vector3 
 	{
 	case GameState::TWO_DIMENSION:
 		swapAxis(t_activeAxis, t_camPos);
-		m_length *= m_sizeMod;
-		m_width *= m_sizeMod;
-		m_height *= m_sizeMod;
 		updateHitbox();
 		break;
 	case GameState::THREE_DIMENSION:
@@ -89,7 +86,7 @@ void GameObject::swapAxis(Vector3 t_activeAxis, Vector3 t_camPos)
 
 	m_position += m_axisBuffer;
 
-	m_sizeMod = Vector3Distance(m_position, t_camPos);
+	m_sizeMod = 70.0f / (Vector3Distance(m_position, t_camPos) + 70.0f);
 	m_length *= m_sizeMod;
 	m_width *= m_sizeMod;
 	m_height *= m_sizeMod;

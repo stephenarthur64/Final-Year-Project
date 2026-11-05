@@ -5,6 +5,7 @@ class Player :
 {
 public:
     Player() {}
+    void update(float t_levelSize);
     void repulsiveForce(RayCollision t_rc);
     void addGroundVelocity(Vector3 t_vel);
 };

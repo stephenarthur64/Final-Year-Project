@@ -1,6 +1,14 @@
 #include "../header/Player.h"
 #include <iostream>
 
+void Player::update(float t_levelSize)
+{
+	if (Vector3Distance((m_position + m_velocity), { 0.0f, 0.0f, 0.0f }) < t_levelSize)
+	{
+		move();
+	}
+}
+
 void Player::repulsiveForce(RayCollision t_rc)
 {
 	Vector3 tempPosition = ((t_rc.normal * (m_width/2.0f)) + t_rc.point) - m_velocity;

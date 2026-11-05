@@ -14,6 +14,20 @@ Wall::Wall(Vector3 t_pos, float t_l, float t_w, float t_h)
 	m_colour = DARKGRAY;
 }
 
+Wall::Wall(Vector3 t_pos, float t_l, float t_w, float t_h, Color t_c)
+{
+	m_position = t_pos;
+	m_defaultLength = t_l;
+	m_defaultWidth = t_w;
+	m_defaultHeight = t_h;
+
+	m_length = m_defaultLength;
+	m_width = m_defaultWidth;
+	m_height = m_defaultHeight;
+
+	m_colour = t_c;
+}
+
 Wall::~Wall()
 {
 	//std::cout << "Deleted\n";

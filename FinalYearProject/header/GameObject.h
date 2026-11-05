@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include "GameState.h"
+#include <iostream>
 
 class GameObject
 {
@@ -16,6 +17,7 @@ public:
 	BoundingBox getHitbox() { return m_hitbox; }
 	BoundingBox getNextHitbox();
 	Vector3 getPosition() { return m_position; }
+	Vector3 getPosition3D() { return m_position + m_axisBuffer; }
 	Vector3 getDirection() { return Vector3Normalize(m_velocity); }
 	Vector3 getVelocity() { return m_velocity; }
 	void toggleHitbox() { m_drawHitbox = !m_drawHitbox; }
@@ -46,5 +48,7 @@ protected:
 	bool m_drawHitbox = false;
 
 	GameState m_state;
+
+	const float DISTANCE_SCALE_FACTOR = 1.0f;
 };
 

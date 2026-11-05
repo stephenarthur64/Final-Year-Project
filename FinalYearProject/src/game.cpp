@@ -11,14 +11,12 @@ void Game::init()
     m_camera.position += m_cameraOffset3D;
     m_camera.target = { 0.0f, 0.0f, 0.0f };     
     m_camera.up = { 0.0f, 1.0f, 0.0f };    
-    m_camera.fovy = 45.0f;                                
+    m_camera.fovy = 70.0f;                                
     m_camera.projection = CAMERA_PERSPECTIVE;
 
-    m_camera2D.position = { 10.0f, 0.0f, 0.0f };
-    m_camera2D.position += m_cameraOffset2D;
     m_camera2D.target = { 0.0f, 0.0f, 0.0f };     
     m_camera2D.up = { 0.0f, 1.0f, 0.0f };    
-    m_camera2D.fovy = 45.0f;                                
+    m_camera2D.fovy = 30.0f;                                
     m_camera2D.projection = CAMERA_ORTHOGRAPHIC;
 
     m_currentCamera = &m_camera;
@@ -26,10 +24,10 @@ void Game::init()
     m_drawHitboxes = false;
     
     m_walls.push_back(std::make_shared<Wall>(Wall({ 2.0f, 2.0f, -5.0f }, 2.0f, 10.0f, 4.0f)));
-    m_walls.push_back(std::make_shared<Wall>(Wall({ 5.0f, 2.0f, 1.0f }, 10.0f, 2.0f, 4.0f)));
+    m_walls.push_back(std::make_shared<Wall>(Wall({ 0.0f, 0.0f, 0.0f }, 20.0f, 20.0f, 2.0f, GRAY)));
 
-    m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 2.0f, 2.0f, 4.0f, {5.0f, 2.0f, -10.0f}, {-5.0f, 2.0f, -10.0f})));
-    m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 5.0f, 5.0f, 2.0f, {5.0f, 0.0f, 10.0f}, {-5.0f, 0.0f, 10.0f})));
+    //m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 2.0f, 2.0f, 4.0f, {5.0f, 2.0f, -10.0f}, {-5.0f, 2.0f, -10.0f})));
+    //m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 5.0f, 5.0f, 2.0f, {5.0f, 0.0f, 10.0f}, {-5.0f, 0.0f, 10.0f})));
 
     m_player.setHitbox();
     for (std::shared_ptr<Wall> wall : m_walls)
@@ -48,8 +46,7 @@ void Game::draw()
 
     BeginMode3D(*m_currentCamera);
 
-    DrawCube({ 0.0f, 0.0f, 0.0f }, 20.0f, 2.0f, 20.0f, GRAY);
-    DrawCubeWires({ 0.0f, 0.0f, 0.0f }, 20.0f, 2.0f, 20.0f, BLACK);
+    //DrawCubeWires({ 0.0f, 0.0f, 0.0f }, 20.0f, 2.0f, 20.0f, BLACK);
 
     m_player.draw();
 
@@ -85,7 +82,7 @@ void Game::update()
 
     if (!m_selectingDimension)
     {
-        m_player.move();
+        m_player.update(m_levelSize);
         for (std::shared_ptr<Wall> wall : m_walls)
         {
             wall.get()->update();
@@ -94,7 +91,7 @@ void Game::update()
     
     collisions();
     cameraUpdate();
-    std::cout << "Distance to camera: " << Vector3Distance(m_player.getPosition(), m_currentCamera->position) << "\n";
+    //std::cout << "Distance to centre: " << Vector3Distance(m_player.getPosition3D(), {0.0f, 0.0f, 0.0f}) << "\n";
 }
 
 void Game::cameraUpdate()
@@ -311,7 +308,6 @@ void Game::swapDimension(GameState t_newState)
         if (m_currentState == GameState::TWO_DIMENSION)
         {
             m_currentCamera = &m_camera2D;
-            m_cameraOffset = m_cameraOffset2D;
             shiftFacing();
         }
         else if (m_currentState == GameState::THREE_DIMENSION)
@@ -334,22 +330,22 @@ void Game::shiftFacing()
     switch (m_facing2D)
     {
     case NORTH:
-        m_camera2D.position = { 10.0f, 0.0f, 0.0f };
+        m_camera2D.position = { m_camDistance2D, 0.0f, 0.0f };
         m_compassText = "North";
         m_currentActiveAxis = { 0.0f, 1.0f, 1.0f };
         break;
     case SOUTH:
-        m_camera2D.position = { -10.0f, 0.0f, 0.0f };
+        m_camera2D.position = { -m_camDistance2D, 0.0f, 0.0f };
         m_compassText = "South";
         m_currentActiveAxis = { 0.0f, 1.0f, 1.0f };
         break;
     case EAST:
-        m_camera2D.position = { 0.0f, 0.0f, 10.0f };
+        m_camera2D.position = { 0.0f, 0.0f, m_camDistance2D };
         m_compassText = "East";
         m_currentActiveAxis = { 1.0f, 1.0f, 0.0f };
         break;
     case WEST:
-        m_camera2D.position = { 0.0f, 0.0f, -10.0f };
+        m_camera2D.position = { 0.0f, 0.0f, -m_camDistance2D };
         m_compassText = "West";
         m_currentActiveAxis = { 1.0f, 1.0f, 0.0f };
         break;

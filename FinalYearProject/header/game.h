@@ -63,6 +63,10 @@ private:
     Vector3 m_currentActiveAxis = { 1.0f, 1.0f, 1.0f };
 
     bool m_movingCamera = false;
+
+    float m_camDistance2D = 20.0f;
+
+    float m_levelSize = 20.0f;
 };
 
 #endif // GAME_H

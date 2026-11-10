@@ -27,7 +27,7 @@ void Game::init()
     m_walls.push_back(std::make_shared<Wall>(Wall({ 0.0f, 0.0f, 0.0f }, 20.0f, 20.0f, 2.0f, GRAY)));
 
     //m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 2.0f, 2.0f, 4.0f, {5.0f, 2.0f, -10.0f}, {-5.0f, 2.0f, -10.0f})));
-    //m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -5.0f, 2.0f, 1.0f }, 5.0f, 5.0f, 2.0f, {5.0f, 0.0f, 10.0f}, {-5.0f, 0.0f, 10.0f})));
+    m_walls.push_back(std::make_shared<MovingWall>(MovingWall({ -10.0f, 0.0f, -5.0f }, 5.0f, 5.0f, 2.0f, {5.0f, 0.0f, 13.0f}, {-15.0f, 0.0f, 13.0f})));
 
     m_player.setHitbox();
     for (std::shared_ptr<Wall> wall : m_walls)
@@ -91,7 +91,6 @@ void Game::update()
     
     collisions();
     cameraUpdate();
-    //std::cout << "Distance to centre: " << Vector3Distance(m_player.getPosition3D(), {0.0f, 0.0f, 0.0f}) << "\n";
 }
 
 void Game::cameraUpdate()

@@ -40,12 +40,15 @@ void MovingWall::swapDimension(GameState t_state, Vector3 t_activeAxis, Vector3 
 	switch (m_state)
 	{
 	case GameState::TWO_DIMENSION:
-		swapAxis(t_activeAxis, t_camPos);
+		updateHitbox();
 		break;
 	case GameState::THREE_DIMENSION:
 		m_position += m_axisBuffer;
 		m_upperLimit += m_upperAxisBuffer;
 		m_lowerLimit += m_lowerAxisBuffer;
+		m_length = m_defaultLength;
+		m_width = m_defaultWidth;
+		m_height = m_defaultHeight;
 		m_axisBuffer = { 0.0f, 0.0f, 0.0f };
 		m_upperAxisBuffer = {0.0f, 0.0f, 0.0f};
 		m_lowerAxisBuffer = {0.0f, 0.0f, 0.0f};
@@ -75,6 +78,15 @@ void MovingWall::swapAxis(Vector3 t_activeAxis, Vector3 t_camPos)
 		m_upperAxisBuffer = {0.0f, 0.0f, m_upperLimit.z};
 		m_lowerAxisBuffer = {0.0f, 0.0f, m_lowerLimit.z};
 	}
+
+	m_length = m_defaultLength;
+	m_width = m_defaultWidth;
+	m_height = m_defaultHeight;
+
+	m_sizeMod = 70.0f / (Vector3Distance(m_position, t_camPos) + 70.0f);
+	m_length *= m_sizeMod;
+	m_width *= m_sizeMod;
+	m_height *= m_sizeMod;
 
 	m_position *= t_activeAxis;
 	m_upperLimit *= t_activeAxis;

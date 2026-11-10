@@ -90,6 +90,11 @@ void GameObject::swapAxis(Vector3 t_activeAxis, Vector3 t_camPos)
 
 	m_position += m_axisBuffer;
 
+	if (m_yBuffer != 0.0f)
+	{
+		m_position.y = m_yBuffer;
+	}
+
 	m_sizeMod = 70.0f / (Vector3Distance(m_position, t_camPos) + 70.0f);
 	m_length *= m_sizeMod;
 	m_width *= m_sizeMod;

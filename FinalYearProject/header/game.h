@@ -30,6 +30,7 @@ public:
     void collisions();
     void swapDimension(GameState t_newState);
     void shiftFacing();
+    void snapObjectsToGround();
 
 private:
     Camera3D m_camera;

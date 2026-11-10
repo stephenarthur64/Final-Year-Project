@@ -29,6 +29,7 @@ protected:
 	Vector3 m_velocity;
 	BoundingBox m_hitbox;
 	Vector3 m_axisBuffer;
+	float m_yBuffer;
 
 	Color m_colour = DARKBLUE;
 

@@ -244,7 +244,7 @@ void Game::collisions()
 {
     for (std::shared_ptr<Wall> wall : m_walls)
     {
-        if (CheckCollisionBoxes(m_player.getNextHitbox(), wall.get()->getHitbox()))
+        if (CheckCollisionBoxes(m_player.getHitbox(), wall.get()->getHitbox()))
         {
             if (m_selectingDimension)
             {
@@ -358,5 +358,22 @@ void Game::shiftFacing()
     for (std::shared_ptr<Wall> wall : m_walls)
     {
         wall.get()->swapAxis(m_currentActiveAxis, m_currentCamera->position);
+    }
+
+    snapObjectsToGround();
+}
+
+void Game::snapObjectsToGround()
+{
+    for (std::shared_ptr<Wall> wall : m_walls)
+    {
+        resetCollisionRay();
+
+        m_collideRay.direction = m_collisionRayDirections[DIRECTION_RAY_AMOUNT - 1];
+        m_collideResult = GetRayCollisionBox(m_collideRay, wall.get()->getHitbox());
+        if (m_collideResult.hit)
+        {
+            m_player.repulsiveForce(m_collideResult);
+        }
     }
 }

@@ -1,6 +1,6 @@
 #include "../header/GameObject.h"
 
-GameObject::GameObject() : m_position({0.0f, 2.0f, 0.0f}), m_velocity({0.0f, 0.0f, 0.0f}), m_axisBuffer({0.0f, 0.0f, 0.0f})
+GameObject::GameObject() : m_position({0.0f, 2.0f, 0.0f}), m_velocity({0.0f, 0.0f, 0.0f}), m_axisBuffer({0.0f, 0.0f, 0.0f}), m_yBuffer(0.0f)
 {
 }
 
@@ -58,18 +58,22 @@ void GameObject::swapDimension(GameState t_state, Vector3 t_activeAxis, Vector3 
 {
 	m_state = t_state;
 
-	m_length = m_defaultLength;
-	m_width = m_defaultWidth;
-	m_height = m_defaultHeight;
 
 	switch (m_state)
 	{
 	case GameState::TWO_DIMENSION:
-		swapAxis(t_activeAxis, t_camPos);
+		//swapAxis(t_activeAxis, t_camPos);
 		updateHitbox();
 		break;
 	case GameState::THREE_DIMENSION:
 		m_position += m_axisBuffer;
+		if (m_yBuffer != 0.0f)
+		{
+			m_position.y = m_yBuffer;
+		}
+		m_length = m_defaultLength;
+		m_width = m_defaultWidth;
+		m_height = m_defaultHeight;
 		m_axisBuffer = { 0.0f, 0.0f, 0.0f };
 		updateHitbox();
 		break;
@@ -95,6 +99,7 @@ void GameObject::swapAxis(Vector3 t_activeAxis, Vector3 t_camPos)
 	if (t_activeAxis.z == 0.0f) { m_axisBuffer = { 0.0f, 0.0f, m_position.z }; }
 
 	m_position *= t_activeAxis;
+
 	updateHitbox();
 
 }
